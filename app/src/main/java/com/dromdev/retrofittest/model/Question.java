@@ -26,4 +26,20 @@ public class Question {
     public List<Choice> getChoices() {
         return choices;
     }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setPublished_at(String published_at) {
+        this.published_at = published_at;
+    }
+
+    public void setChoices(List<Choice> choices) {
+        this.choices = choices;
+    }
 }

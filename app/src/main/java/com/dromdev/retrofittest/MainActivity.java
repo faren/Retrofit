@@ -31,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
         getQuestionChoice();
         postQuestionChoice();
+        putQuestionChoice();
+        deleteQuestionChoice();
 
-        getVehicle();
+        //getVehicle();
+        searchVehicle();
     }
 
     @Override
@@ -129,6 +132,58 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void putQuestionChoice(){
+
+        Question question = new Question();
+        question.setQuestion("Android Network Library terbaik?");
+        question.setPublished_at("20-03-2016");
+        question.setUrl("http://hello.com");
+
+        Call<Question> call = service.modifyQuestion(2, question);
+
+        call.enqueue(new Callback<Question>() {
+            @Override
+            public void onResponse(Call<Question> call, Response<Question> response) {
+                System.out.println("Post Response = " + response.code());
+                System.out.println("Question = " + response.body().getQuestion());
+                System.out.println("URL = " + response.body().getUrl());
+                System.out.println("Published at = " + response.body().getPublished_at());
+
+                for(Choice ch: response.body().getChoices()){
+                    System.out.println("Choice = " + ch.getChoice());
+                    System.out.println("Vote = " + ch.getVotes());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Question> call, Throwable t) {
+                System.out.println(t.getMessage());
+
+            }
+        });
+
+    }
+
+    private void deleteQuestionChoice(){
+
+        Call<Question> call = service.deleteQuestion(2);
+        System.out.println("Faren success");
+
+        call.enqueue(new Callback<Question>() {
+            @Override
+            public void onResponse(Call<Question> call, Response<Question> response) {
+                System.out.println("Delete Response = " + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Question> call, Throwable t) {
+                System.out.println(t.getMessage());
+
+            }
+        });
+    }
+
     private void getVehicle(){
         // call question
         Call<Vehicle> vehicle= service.vehic();
@@ -154,5 +209,32 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("failure = " + t.getMessage());
             }
         });
+    }
+
+    private void searchVehicle(){
+
+        Call<Vehicle> vehicle = service.searchVehic("name", "Angkot Merah",1,20);
+
+        vehicle.enqueue(new Callback<Vehicle>() {
+            @Override
+            public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
+                System.out.println("Response = " + response.code());
+                System.out.println("Response items = " + response.body().getVehicles());
+
+                for (Vehicle.ItemVehicle vh:response.body().getVehicles()) {
+                    System.out.println("Vehicle id = " + vh.getId());
+                    System.out.println("Vehicle Name = " + vh.getName());
+                    System.out.println("Vehicle Height = " + vh.getHeight());
+                    System.out.println("Vehicle Length = " + vh.getLength());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Vehicle> call, Throwable t) {
+                System.out.println("failure = " + t.getMessage());
+            }
+        });
+
     }
 }

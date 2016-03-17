@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.dromdev.retrofittest.model.Choice;
 import com.dromdev.retrofittest.model.Question;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,10 +24,15 @@ public class MainActivity extends AppCompatActivity {
     public Retrofit mRestAdapter;
     public RetrofitRequestService service;
 
+    @Bind(R.id.tv_question) TextView tvQuestion;
+    @Bind(R.id.tv_choices) TextView tvChoices;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
 
         //initialize retrofit
         mRestAdapter = new Retrofit
@@ -45,9 +53,12 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("published_at = " + response.body().get(0).getPublished_at());
                 System.out.println("url = " + response.body().get(0).getUrl());
 
+                tvQuestion.setText(response.body().get(0).getQuestion());
+
                 for (Choice ch:response.body().get(0).getChoices()) {
                     System.out.println("choice = " + ch.getChoice());
                     System.out.println("votes = " + ch.getVotes());
+                    tvChoices.append(ch.getChoice() + "\n");
                 }
 
             }
